@@ -1,0 +1,135 @@
+# =========================================================
+# Konfigurasi — Mining Notísia Online no Deteksaun Topiku
+# =========================================================
+
+sources:
+  - name: "Tatoli"
+    feed_url: "https://tatoli.tl/feed/"
+    enabled: true
+
+  - name: "Timor Post (Tetun)"
+    feed_url: "https://timorpost.com/feed/"
+    enabled: true
+
+  - name: "Timor Post (Indonesia)"
+    feed_url: "https://id.timorpost.com/feed/"
+    enabled: true
+
+  - name: "Timor Post (Portugis)"
+    feed_url: "https://pt.timorpost.com/feed/"
+    enabled: true
+
+  - name: "Timor News"
+    feed_url: "" # belum ada feed valid, biarkan kosong
+    enabled: false
+
+  - name: "GMN TV"
+    feed_url: "" # belum ada feed valid, biarkan kosong
+    enabled: false
+
+scraping:
+  full_content: true
+  max_articles_per_run: 20
+  delay_seconds: 1.5
+
+  selectors:
+    content:
+      - "div.entry-content"
+      - "div.post-content"
+      - "div.td-post-content"
+      - "div.single-content"
+      - "div.article-content"
+      - "article .content"
+      - "article"
+    category:
+      - "span.cat-links a"
+      - "div.cat-links a"
+      - ".breadcrumb a:last-of-type"
+      - "a[rel='category tag']"
+      - ".post-category a"
+    date_meta:
+      - "meta[property='article:published_time']"
+      - "meta[name='article:published_time']"
+    date_tag:
+      - "time[datetime]"
+      - "time"
+    image_meta:
+      - "meta[property='og:image']"
+      - "meta[name='twitter:image']"
+
+  selectors_by_source:
+    "Timor Post (Tetun)":
+      content:
+        - "div.entry-content"
+      category:
+        - "a[rel='category tag']"
+      image_meta:
+        - "meta[property='og:image']"
+    "Timor Post (Indonesia)":
+      content:
+        - "div.entry-content"
+      category:
+        - "a[rel='category tag']"
+      image_meta:
+        - "meta[property='og:image']"
+    "Timor Post (Portugis)":
+      content:
+        - "div.entry-content"
+      category:
+        - "a[rel='category tag']"
+      image_meta:
+        - "meta[property='og:image']"
+
+paths:
+  raw: "data/raw"
+  cleaned: "data/cleaned"
+  models: "data/models"
+  keywords: "data/keywords"
+  logs: "logs"
+  batches: "data/batches"      # lote pedidu (CSV, JSON, SQLite)
+  uploads: "data/uploads"      # ficheiru ne'ebé karga husi painel
+  database: "database/database.db"
+  model_bundle: "models/model.pkl"
+
+clustering:
+  min_k: 2
+  max_k: 10
+  random_state: 42
+  silhouette_sample_size: 3000  # sampel acak utk hitung silhouette (hemat memori)
+  max_features: 5000
+  ngram_min: 1
+  ngram_max: 2
+  min_df: 2
+
+keywords:
+  top_n_terms: 10
+
+languages:
+  supported: ["id", "en", "tet", "pt"]
+  default: "tet"
+
+# Koleta notísia istóriku (ex: husi 2016 to agora) liuhusi WordPress REST API.
+# Uza: python main.py --since 2016-01-01   (ka butaun "Kolete istória" iha dashboard)
+history:
+  start_date: "2016-01-01"
+  per_page: 100        # máx. 100 (limite WordPress)
+  max_pages: 1000      # limite seguransa kada orijen (1000 x 100 = 100.000 notísia)
+  delay_seconds: 1.0   # intervalu entre pedidu (atu labele sobrecarga server)
+
+# ---------------------------------------------------------------
+# Fluxu servisu foun iha painel (pedidu dadus -> preprosesamentu -> treinu)
+# ---------------------------------------------------------------
+batch:
+  target_mb: 200               # tamañu CSV kada pedidu (MB); kada pedidu = lote rasik
+  per_page: 100                # notísia kada pájina API (máx. 100)
+  delay_seconds: 1.0           # intervalu entre pájina (atu labele sobrecarga server)
+  auto_enabled: true           # pedidu automátiku ativu husi hahú
+  auto_interval_minutes: 30    # pedidu automátiku kada minutu hira (depois pedidu anterior remata)
+
+training:
+  max_features: 5000
+  ngram_max: 2
+  min_df: 2
+  test_fraction: 0.2           # 20% dadus ba teste (avaliasaun)
+  min_k: 2
+  max_k: 12

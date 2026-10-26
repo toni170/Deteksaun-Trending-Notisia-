@@ -1,0 +1,9 @@
+streamlit
+plotly
+wordcloud
+Sastrawi
+nltk
+feedparser
+openpyxl
+pytest
+pytest-cov

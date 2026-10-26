@@ -1,0 +1,6 @@
+[server]
+# Ficheiru lote CSV to'o 200 MB; limite karga (MB) aumenta atu bele karga lote ida.
+maxUploadSize = 1024
+
+[browser]
+gatherUsageStats = false
