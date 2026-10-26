@@ -1,3 +1,4 @@
+HEAD
 # Mining Notísia Online no Deteksaun Topiku
 
 Sistema Python atu foti notísia husi portal Timor-Leste (Tatoli, Timor Post, no seluk tan), prepara dadus,
@@ -96,3 +97,6 @@ venv\Scripts\activate
 pip install -r requirements.txt
 streamlit run src/dashboard/trend_dashboard.py
 ```
+
+# Deteksaun-Trending-Notisia-
+f714f774cb2f1c3029044e79c753e5286ae7284f
